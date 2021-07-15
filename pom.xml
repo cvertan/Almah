@@ -1,0 +1,117 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>allmahVer4</groupId>
+  <artifactId>allmahVer4</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+  <repositories>
+	<repository>
+		<id>maven-dariah-public</id>
+		<name>GWDG Nexus DARIAH-DE Repository</name>
+		<url>https://nexus.gwdg.de/repository/maven-dariah-public/</url>
+	</repository>
+    </repositories>
+     <dependencies>
+      <dependency>
+      <groupId>org.jgrapht</groupId>
+               <artifactId>jgrapht-core</artifactId>
+                  <version>1.5.0</version>
+      </dependency>
+     
+          <dependency>
+            <groupId>org.classicmayan.tools</groupId>
+            <artifactId>idiomQueries</artifactId>
+            <version>1.1.61</version>
+          </dependency>
+           <dependency>
+            <groupId>info.textgrid.middleware.clients</groupId>
+            <artifactId>textgrid-clients</artifactId>
+            <version>3.2.5</version>
+        </dependency>
+        <dependency>
+               <groupId>edu.mit</groupId>
+               <artifactId>jwi</artifactId>
+               <version>2.2.3</version>
+        </dependency>
+        <dependency>
+  <groupId>net.sf.jung</groupId>
+  <artifactId>jung-api</artifactId>
+  <version>2.1.1</version>
+</dependency>
+<dependency>
+  <groupId>net.sf.jung</groupId>
+  <artifactId>jung-graph-impl</artifactId>
+  <version>2.1.1</version>
+</dependency>
+<dependency>
+  <groupId>net.sf.jung</groupId>
+  <artifactId>jung-algorithms</artifactId>
+  <version>2.1.1</version>
+</dependency>
+<dependency>
+  <groupId>net.sf.jung</groupId>
+  <artifactId>jung-io</artifactId>
+  <version>2.1.1</version>
+</dependency>
+<dependency>
+  <groupId>net.sf.jung</groupId>
+  <artifactId>jung-visualization</artifactId>
+  <version>2.1.1</version>
+</dependency>
+
+<dependency>
+  <groupId>net.sf.jung</groupId>
+  <artifactId>jung-samples</artifactId>
+  <version>2.1.1</version>
+</dependency>
+<dependency>
+ <groupId>org.jdom</groupId>
+ <artifactId>jdom2</artifactId>
+ <version>2.0.6</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-collections4</artifactId>
+    <version>4.4</version>
+</dependency>
+    </dependencies>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>maven-dariah-public</id>
+			<name>GWDG Nexus DARIAH-DE Repository</name>
+			<url>https://nexus.gwdg.de/repository/maven-dariah-public/</url>
+		</snapshotRepository>
+		<repository>
+			<id>maven-dariah-public</id>
+			<name>GWDG Nexus DARIAH-DE Repository</name>
+			<url>https://nexus.gwdg.de/repository/maven-dariah-public/</url>
+		</repository>
+	</distributionManagement>
+      <build>
+         
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>4.0.0</version>
+                <configuration>
+                    <downloadSources>true</downloadSources>
+                    <downloadJavadocs>false</downloadJavadocs>
+                </configuration>
+            </plugin>
+            <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-jar-plugin</artifactId>
+      <version>3.2.0</version>
+      <configuration>
+          <archive>
+              <manifest>
+                  <addClasspath>true</addClasspath>
+                  <mainClass>allmahVer4.AllmahLaunch</mainClass>
+              </manifest>
+          </archive>
+      </configuration>
+      </plugin>
+        </plugins>
+    </build>
+</project>

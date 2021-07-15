@@ -1,0 +1,12 @@
+################################################################################
+## Configutation File for the Access to the endpoints with secret credentilas ##
+################################################################################
+
+zotero.apiKey=
+
+tg.sessionID=TqPzwJPgS72mfJaI3EFRlM1Oj1brzpdjgPzP8QDfrfonbJqNlpGbqh560QkV5v8lsHn4h1590254308049165
+tg.projectID=TGPR-0e926f53-1aba-d415-ecf6-539edcd8a318
+tg.formatToFilter=format:text/xml
+tg.querySize=1000
+
+odb.password=

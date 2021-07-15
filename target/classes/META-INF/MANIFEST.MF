@@ -1,0 +1,38 @@
+Manifest-Version: 1.0
+Class-Path: jgrapht-core-1.5.0.jar jheaps-0.13.jar idiomQueries-1.1.61
+ .jar jena-arq-3.10.0.jar jena-core-3.10.0.jar jena-iri-3.10.0.jar com
+ mons-cli-1.4.jar commons-codec-1.11.jar jena-base-3.10.0.jar commons-
+ csv-1.5.jar commons-compress-1.17.jar collection-0.7.jar jena-shaded-
+ guava-3.10.0.jar httpclient-4.5.5.jar httpcore-4.4.9.jar jsonld-java-
+ 0.12.1.jar jackson-core-2.9.6.jar jackson-databind-2.9.6.jar jackson-
+ annotations-2.9.0.jar commons-io-2.6.jar httpclient-cache-4.5.5.jar l
+ ibthrift-0.10.0.jar jcl-over-slf4j-1.7.25.jar commons-lang3-3.4.jar s
+ lf4j-api-1.7.25.jar mail-1.4.7.jar activation-1.1.jar slf4j-jdk14-1.7
+ .25.jar orientdb-core-3.0.4.jar jna-4.5.0.jar jna-platform-4.5.0.jar 
+ concurrentlinkedhashmap-lru-1.4.2.jar orientdb-client-3.0.4.jar orien
+ tdb-object-3.0.4.jar hibernate-jpa-2.0-api-1.0.1.Final.jar javassist-
+ 3.22.0-GA.jar orientdb-graphdb-3.0.4.jar orientdb-server-3.0.4.jar ja
+ xb-impl-2.3.0.1.jar jaxb-core-2.3.0.1.jar orientdb-tools-3.0.4.jar bl
+ ueprints-core-2.6.0.jar jettison-1.3.3.jar stax-api-1.0.1.jar hppc-0.
+ 6.0.jar commons-configuration-1.6.jar commons-lang-2.4.jar commons-di
+ gester-1.8.jar commons-beanutils-1.7.0.jar commons-beanutils-core-1.8
+ .0.jar jaxws-api-2.2.6.jar jaxb-api-2.2.4.jar stax-api-1.0-2.jar saaj
+ -api-1.3.4.jar javax.annotation-3.1.1.jar jsr181-api-1.0-MR1.jar json
+ -20190722.jar textgrid-clients-3.2.5.jar tgsearch-api-3.6.3.jar jsr31
+ 1-api-1.0.jar metadata-core-jaxb-2.0.0.jar tgcrud-client-7.4.0.jar tg
+ auth-client-1.8.0.jar tgauth-client-crud-1.8.0.jar cxf-rt-frontend-ja
+ xrs-3.1.7.jar cxf-core-3.1.7.jar woodstox-core-asl-4.4.1.jar stax2-ap
+ i-3.1.4.jar xmlschema-core-2.2.1.jar javax.ws.rs-api-2.0.1.jar javax.
+ annotation-api-1.2.jar cxf-rt-frontend-jaxws-3.1.7.jar xml-resolver-1
+ .2.jar asm-5.0.4.jar cxf-rt-bindings-soap-3.1.7.jar cxf-rt-wsdl-3.1.7
+ .jar wsdl4j-1.6.3.jar cxf-rt-databinding-jaxb-3.1.7.jar cxf-rt-bindin
+ gs-xml-3.1.7.jar cxf-rt-frontend-simple-3.1.7.jar cxf-rt-ws-addr-3.1.
+ 7.jar cxf-rt-ws-policy-3.1.7.jar neethi-3.0.3.jar cxf-rt-transports-h
+ ttp-3.1.7.jar cxf-rt-rs-client-3.1.7.jar jwi-2.2.3.jar jung-api-2.1.1
+ .jar guava-19.0.jar jung-graph-impl-2.1.1.jar jung-algorithms-2.1.1.j
+ ar jung-io-2.1.1.jar jung-visualization-2.1.1.jar jung-samples-2.1.1.
+ jar jdom2-2.0.6.jar commons-collections4-4.4.jar
+Build-Jdk-Spec: 1.8
+Created-By: Maven Integration for Eclipse
+Main-Class: allmahVer4.AllmahLaunch
+
