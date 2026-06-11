@@ -1,0 +1,1025 @@
+@prefix allmah: <https://classicmayan.org/allmah/ontology#> .
+@prefix sh:     <http://www.w3.org/ns/shacl#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<https://classicmayan.org/allmah/shapes-v0.7>
+    a <http://www.w3.org/2002/07/owl#Ontology> .
+
+#################################################################
+# Metadata validation
+#################################################################
+
+allmah:MetadataRecordShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:MetadataRecord ;
+
+    sh:property [
+        sh:path allmah:textGridUri ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:hasSourceType ;
+        sh:class allmah:SourceType ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:in ( allmah:LocalXmlSource allmah:TextGridSource allmah:GraphDbSource ) ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:hasImportState ;
+        sh:class allmah:ImportState ;
+        sh:maxCount 1 ;
+        sh:in ( allmah:Imported allmah:Parsed allmah:Validated allmah:ImportFailed ) ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:createdAt ;
+        sh:datatype xsd:dateTime ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:lastModifiedAt ;
+        sh:datatype xsd:dateTime ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:revision ;
+        sh:datatype xsd:integer ;
+        sh:maxCount 1 ;
+    ] .
+
+#################################################################
+# Document validation
+#################################################################
+
+allmah:DocumentShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:Document ;
+
+    sh:property [
+        sh:path allmah:title ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:hasMetadataRecord ;
+        sh:class allmah:MetadataRecord ;
+        sh:maxCount 1 ;
+    ] .
+
+#################################################################
+# Text field validation
+#################################################################
+
+allmah:TextFieldShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:TextField ;
+
+    sh:property [
+        sh:path allmah:teiXmlId ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1 ;
+    ] .
+
+#################################################################
+# Block validation
+#################################################################
+
+allmah:HieroglyphBlockShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:HieroglyphBlock ;
+
+    sh:property [
+        sh:path allmah:teiXmlId ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:blockLabel ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1 ;
+    ] .
+
+#################################################################
+# Glyph validation
+#################################################################
+
+allmah:GlyphElementShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:GlyphElement ;
+
+    sh:property [
+        sh:path allmah:teiXmlId ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:catalogNumber ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:catalogRef ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:hasGlyphType ;
+        sh:class allmah:GlyphType ;
+        sh:maxCount 1 ;
+        sh:in ( allmah:ST allmah:BT allmah:BH allmah:BB allmah:TF allmah:VC allmah:BV ) ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:isDamaged ;
+        sh:datatype xsd:boolean ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:hasReadingAssignment ;
+        sh:class allmah:ReadingAssignment ;
+    ] .
+
+#################################################################
+# Component validation
+#################################################################
+
+allmah:ComponentShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:Component ;
+
+    sh:property [
+        sh:path allmah:hasComponentMember ;
+        sh:class allmah:GlyphElement ;
+        sh:minCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:componentDisplayOrder ;
+        sh:datatype xsd:integer ;
+    ] .
+
+
+# Additional persistence constraints for document-specific components
+# Components are stored once as structural/document-specific resources.
+# A GraphemicElement may optionally point to one component while still
+# keeping its normal allmah:hasParentElement link to the GraphematicElement.
+
+allmah:ComponentPersistenceShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:Component ;
+
+    sh:property [
+        sh:path allmah:componentLabel ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:componentColor ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:pattern "^#[0-9A-Fa-f]{6}$" ;
+    ] .
+
+allmah:GraphemicElementComponentShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:GraphemicElement ;
+
+    sh:property [
+        sh:path allmah:hasGraphemicComponent ;
+        sh:class allmah:Component ;
+        sh:maxCount 1 ;
+    ] .
+
+
+#################################################################
+# Glyph relation validation
+#################################################################
+
+allmah:GlyphRelationShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:GlyphRelation ;
+
+    sh:property [
+        sh:path allmah:sourceGlyph ;
+        sh:class allmah:GlyphElement ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:targetGlyph ;
+        sh:class allmah:GlyphElement ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:hasRenditionType ;
+        sh:class allmah:GlyphRenditionType ;
+        sh:maxCount 1 ;
+        sh:in (
+            allmah:Above
+            allmah:Beneath
+            allmah:AttachedAtTopLeft
+            allmah:IsAdjoinedTo
+            allmah:Encloses
+            allmah:InfixedIn
+            allmah:LeftBeside
+            allmah:RightBeside
+            allmah:UnknownRendition
+        ) ;
+    ] .
+
+#################################################################
+# Reading assignment validation
+#################################################################
+
+allmah:ReadingAssignmentShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:ReadingAssignment ;
+
+    sh:property [
+        sh:path allmah:assignedReading ;
+        sh:class allmah:Reading ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:hasReadingRole ;
+        sh:class allmah:ReadingRole ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:in (
+            allmah:PossibleReading
+            allmah:InitialReading
+            allmah:SelectedReading
+            allmah:RejectedReading
+        ) ;
+    ] .
+
+allmah:ReadingShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:Reading ;
+
+    sh:property [
+        sh:path allmah:literalValue ;
+        sh:datatype xsd:string ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:readingType ;
+        sh:datatype xsd:string ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:confidence ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 1 ;
+        sh:maxInclusive 5 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:sourceUri ;
+        sh:datatype xsd:anyURI ;
+        sh:maxCount 1 ;
+    ] .
+
+#################################################################
+# Candidate validation
+#################################################################
+
+allmah:CandidateShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:Candidate ;
+
+    sh:property [
+        sh:path allmah:hasCandidateStatus ;
+        sh:class allmah:CandidateStatus ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:in (
+            allmah:ActiveStatus
+            allmah:FrozenStatus
+            allmah:DiscardedStatus
+            allmah:SupersededStatus
+        ) ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:hasGenerationMode ;
+        sh:class allmah:GenerationMode ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:in (
+            allmah:AutomaticGeneration
+            allmah:ManualGeneration
+            allmah:ImportedGeneration
+        ) ;
+    ] .
+
+#################################################################
+# Interpretation level validation
+#################################################################
+
+allmah:InterpretationLevelShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:InterpretationLevel ;
+
+    sh:property [
+        sh:path allmah:hasInterpretationLevelType ;
+        sh:class allmah:InterpretationLevelType ;
+        sh:maxCount 1 ;
+        sh:in (
+            allmah:ReadingLevelType
+            allmah:AlphanumericLevelType
+            allmah:NumericLevelType
+            allmah:GraphematicLevelType
+            allmah:GraphemicLevelType
+            allmah:PhonemicLevelType
+            allmah:MorphologicalLevelType
+            allmah:MorphophonemicLevelType
+            allmah:ConsolidatedLevelType
+            allmah:SyntacticLevelType
+            allmah:SemanticLevelType
+            allmah:GlossingLevelType
+            allmah:TranslationLevelType
+        ) ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:interpretationText ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:confidence ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 1 ;
+        sh:maxInclusive 5 ;
+        sh:maxCount 1 ;
+    ] .
+
+allmah:AlphanumericTransliterationShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:AlphanumericTransliteration ;
+
+    sh:property [
+        sh:path allmah:hasAlphanumericElement ;
+        sh:class allmah:AlphanumericElement ;
+    ] .
+
+allmah:AlphanumericElementShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:AlphanumericElement ;
+
+    sh:property [
+        sh:path allmah:literalValue ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:hasParentElement ;
+        sh:class allmah:GlyphElement ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] .
+
+allmah:NumericTransliterationShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:NumericTransliteration ;
+
+    sh:property [
+        sh:path allmah:hasNumericElement ;
+        sh:class allmah:NumericElement ;
+    ] .
+
+allmah:NumericElementShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:NumericElement ;
+
+    sh:property [
+        sh:path allmah:literalValue ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:hasParentElement ;
+        sh:class allmah:AlphanumericElement ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:hasReadingAssignment ;
+        sh:class allmah:ReadingAssignment ;
+    ] .
+
+allmah:GraphematicTransliterationShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:GraphematicTransliteration ;
+    sh:property [
+        sh:path allmah:hasGraphematicElement ;
+        sh:class allmah:GraphematicElement ;
+    ] .
+
+allmah:GraphematicElementShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:GraphematicElement ;
+    sh:property [
+        sh:path allmah:literalValue ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path allmah:hasParentElement ;
+        sh:class allmah:NumericElement ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] .
+
+allmah:GraphemicTransliterationShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:GraphemicTransliteration ;
+    sh:property [
+        sh:path allmah:hasGraphemicElement ;
+        sh:class allmah:GraphemicElement ;
+    ] ;
+    sh:property [
+        sh:path allmah:isFrozen ;
+        sh:datatype xsd:boolean ;
+        sh:maxCount 1 ;
+    ] .
+
+allmah:GraphemicElementShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:GraphemicElement ;
+    sh:property [
+        sh:path allmah:literalValue ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path allmah:hasParentElement ;
+        sh:class allmah:GraphematicElement ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] .
+#################################################################
+# Concatenated reading validation
+#################################################################
+
+allmah:ConcatenatedDocumentReadingShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:ConcatenatedDocumentReading ;
+
+    sh:property [
+        sh:path allmah:usesBlock ;
+        sh:class allmah:HieroglyphBlock ;
+        sh:minCount 2 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:concatenationOperator ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:in ( "." ) ;
+    ] .
+
+#################################################################
+# Interpretation element parent-chain validation
+#################################################################
+
+allmah:AlphanumericElementShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:AlphanumericElement ;
+    sh:property [
+        sh:path allmah:hasParentElement ;
+        sh:class allmah:GlyphElement ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] .
+
+allmah:NumericElementShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:NumericElement ;
+    sh:property [
+        sh:path allmah:hasParentElement ;
+        sh:class allmah:AlphanumericElement ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] .
+
+allmah:GraphematicElementShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:GraphematicElement ;
+    sh:property [
+        sh:path allmah:hasParentElement ;
+        sh:class allmah:NumericElement ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] .
+
+allmah:GraphemicElementShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:GraphemicElement ;
+    sh:property [
+        sh:path allmah:hasParentElement ;
+        sh:class allmah:GraphematicElement ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] .
+
+allmah:PhonemicElementShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:PhonemicElement ;
+    sh:property [
+        sh:path allmah:hasParentElement ;
+        sh:class allmah:GraphemicElement ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] .
+
+allmah:MorphologicalElementShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:MorphologicalElement ;
+    sh:property [
+        sh:path allmah:hasParentElement ;
+        sh:class allmah:PhonemicElement ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] .
+
+allmah:MorphophonemicElementShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:MorphophonemicElement ;
+    sh:property [
+        sh:path allmah:hasParentElement ;
+        sh:class allmah:MorphologicalElement ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] .
+
+allmah:ConsolidatedTranscriptionElementShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:ConsolidatedTranscriptionElement ;
+    sh:property [
+        sh:path allmah:hasParentElement ;
+        sh:class allmah:InterpretationElement ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] .
+
+#################################################################
+# Interpretation level parent-chain validation
+#################################################################
+
+allmah:NumericTransliterationShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:NumericTransliteration ;
+    sh:property [
+        sh:path allmah:hasParentInterpretationLevel ;
+        sh:class allmah:AlphanumericTransliteration ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] .
+
+allmah:GraphematicTransliterationShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:GraphematicTransliteration ;
+    sh:property [
+        sh:path allmah:hasParentInterpretationLevel ;
+        sh:class allmah:NumericTransliteration ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] .
+
+allmah:GraphemicTransliterationShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:GraphemicTransliteration ;
+    sh:property [
+        sh:path allmah:hasParentInterpretationLevel ;
+        sh:class allmah:GraphematicTransliteration ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path allmah:hasPhonemicTranscription ;
+        sh:class allmah:PhonemicTranscription ;
+    ] .
+
+allmah:PhonemicTranscriptionShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:PhonemicTranscription ;
+    sh:property [
+        sh:path allmah:hasParentInterpretationLevel ;
+        sh:class allmah:GraphemicTransliteration ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path allmah:hasPhonemicElement ;
+        sh:class allmah:PhonemicElement ;
+        sh:minCount 1 ;
+    ] .
+
+allmah:MorphologicalTranscriptionShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:MorphologicalTranscription ;
+    sh:property [
+        sh:path allmah:hasParentInterpretationLevel ;
+        sh:class allmah:PhonemicTranscription ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] .
+
+#################################################################
+# Operator vocabulary validation
+#################################################################
+
+allmah:OperatorTypeShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:OperatorType ;
+
+    sh:property [
+        sh:path allmah:operatorSymbol ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:validInOperatorScope ;
+        sh:class allmah:OperatorScope ;
+        sh:minCount 1 ;
+    ] .
+
+allmah:OperatorUseShape
+    a sh:NodeShape ;
+    sh:targetObjectsOf allmah:hasOperatorType ;
+
+    sh:class allmah:OperatorType ;
+    sh:in (
+        allmah:EmptyOperator
+        allmah:ColonOperator
+        allmah:DotOperator
+        allmah:PlusOperator
+        allmah:DegreeOperator
+        allmah:TopLeftOperator
+        allmah:TopRightOperator
+        allmah:HyphenOperator
+        allmah:EqualsOperator
+        allmah:UpArrowOperator
+        allmah:TildeOperator
+        allmah:SquareBracketOperator
+        allmah:CurlyBracketOperator
+        allmah:PipeOperator
+        allmah:LessThanOperator
+        allmah:GreaterThanOperator
+        allmah:ConsonantOperator
+        allmah:VowelOperator
+        allmah:HOperator
+        allmah:ZeroOperator
+        allmah:CaretOperator
+        allmah:BottomRightOperator
+        allmah:BottomLeftOperator
+        allmah:UpperRightCornerOperator
+        allmah:UpperLeftCornerOperator
+    ) .
+
+#################################################################
+# Scholarly assertion / manual variant validation
+#################################################################
+
+allmah:ManualVariantShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:ManualVariant ;
+
+    sh:property [
+        sh:path allmah:createdBy ;
+        sh:class allmah:Agent ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:editorialComment ;
+        sh:datatype rdf:langString ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:hasConfidenceLevel ;
+        sh:class allmah:ConfidenceLevel ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:in (
+            allmah:Confidence1
+            allmah:Confidence2
+            allmah:Confidence3
+            allmah:Confidence4
+            allmah:Confidence5
+        ) ;
+    ] ;
+
+    sh:property [
+        sh:path allmah:hasGenerationMode ;
+        sh:hasValue allmah:ManualGeneration ;
+        sh:minCount 1 ;
+    ] .
+
+allmah:ConfidenceLevelShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:ConfidenceLevel ;
+
+    sh:property [
+        sh:path allmah:confidenceNumericValue ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 1 ;
+        sh:maxInclusive 5 ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] .
+
+#################################################################
+# Morphosyntactic transcription shapes
+#################################################################
+
+allmah:MorphosyntacticTranscriptionShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:MorphosyntacticTranscription ;
+    sh:property [
+        sh:path allmah:hasParentInterpretationLevel ;
+        sh:class allmah:PhonemicTranscription ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path allmah:hasMorphosyntacticElement ;
+        sh:class allmah:MorphosyntacticElement
+    ] ;
+    sh:property [
+        sh:path allmah:consolidatedLabel ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path allmah:finalConsolidatedLabel ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1
+    ] .
+
+allmah:MorphosyntacticElementShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:MorphosyntacticElement ;
+    sh:property [
+        sh:path allmah:hasParentElement ;
+        sh:class allmah:PhonemicElement ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path allmah:hasMorphosyntacticLetterElement ;
+        sh:class allmah:MorphosyntacticElement
+    ] ;
+    sh:property [
+        sh:path allmah:hasOldParentMorphosyntacticElement ;
+        sh:class allmah:MorphosyntacticElement ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path allmah:hasNewParentMorphosyntacticElement ;
+        sh:class allmah:MorphosyntacticElement ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path allmah:isRemoved ;
+        sh:datatype xsd:boolean ;
+        sh:maxCount 1
+    ] .
+
+
+#################################################################
+# Morphosyntactic glossing shapes
+#################################################################
+
+allmah:MorphosyntacticGlossingShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:MorphosyntacticGlossing ;
+
+    sh:property [
+        sh:path allmah:hasGlossingElement ;
+        sh:class allmah:GlossingElement
+    ] ;
+
+    sh:property [
+        sh:path allmah:hasParentInterpretationLevel ;
+        sh:class allmah:MorphosyntacticTranscription ;
+        sh:maxCount 1
+    ] ;
+
+    sh:property [
+        sh:path allmah:confidence ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 1 ;
+        sh:maxInclusive 5 ;
+        sh:maxCount 1
+    ] .
+
+allmah:GlossingElementShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:GlossingElement ;
+
+    sh:property [
+        sh:path allmah:hasParentElement ;
+        sh:class allmah:MorphosyntacticElement ;
+        sh:maxCount 1
+    ] ;
+
+    sh:property [
+        sh:path allmah:semanticGloss ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1
+    ] ;
+
+    sh:property [
+        sh:path allmah:syntacticGloss ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1
+    ] ;
+
+    sh:property [
+        sh:path allmah:posCluster ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1
+    ] ;
+
+    sh:property [
+        sh:path allmah:posTag ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1
+    ] ;
+
+    sh:property [
+        sh:path allmah:wordNetSynsetId ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1
+    ] .
+
+
+#################################################################
+# Translation and dictionary background node shapes
+#################################################################
+
+allmah:MorphosyntacticGlossingTranslationNodeShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:MorphosyntacticGlossing ;
+    sh:property [
+        sh:path allmah:hasTranslationNode ;
+        sh:class allmah:TranslationNode
+    ] .
+
+allmah:TranslationNodeShape
+    a sh:NodeShape ;
+    sh:targetClass allmah:TranslationNode ;
+
+    sh:property [
+        sh:path allmah:internalId ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path allmah:originalText ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path allmah:translationText ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path allmah:elementLabel ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path allmah:semanticMeaning ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path allmah:syntacticFunction ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path allmah:wordNetSynsetId ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path allmah:explanation ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path allmah:isDictionaryEntry ;
+        sh:datatype xsd:boolean ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path allmah:hasParentInterpretationLevel ;
+        sh:class allmah:MorphosyntacticGlossing ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path allmah:hasPart ;
+        sh:class allmah:TranslationNode
+    ] ;
+    sh:property [
+        sh:path allmah:composedOf ;
+        sh:class allmah:TranslationNode
+    ] .
+
+
+#################################################################
+# Block annotation shapes
+#################################################################
+
+allmah:BlockAnnotationShape a sh:NodeShape ;
+    sh:targetClass allmah:BlockAnnotation ;
+    sh:property [
+        sh:path allmah:internalId ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path allmah:annotationType ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path allmah:annotationSubType ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path allmah:annotatesBlock ;
+        sh:class allmah:HieroglyphBlock ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path allmah:hasAnnotationURI ;
+        sh:class allmah:AnnotationURI ;
+        sh:maxCount 1 ;
+    ] .
+
+allmah:ActivityURIShape a sh:NodeShape ;
+    sh:targetClass allmah:ActivityURI ;
+    sh:property [ sh:path allmah:activityDescription ; sh:datatype xsd:string ; ] ;
+    sh:property [ sh:path allmah:placeOfActivity ; sh:datatype xsd:string ; ] .
+
+allmah:DedicationURIShape a sh:NodeShape ;
+    sh:targetClass allmah:DedicationURI ;
+    sh:property [ sh:path allmah:dedicationTitle ; sh:datatype xsd:string ; ] ;
+    sh:property [ sh:path allmah:dedicationPlace ; sh:datatype xsd:string ; ] .
+
+allmah:PlaceURIShape a sh:NodeShape ;
+    sh:targetClass allmah:PlaceURI ;
+    sh:property [ sh:path allmah:placeName ; sh:datatype xsd:string ; ] ;
+    sh:property [ sh:path allmah:locatedIn ; sh:datatype xsd:string ; ] .
+
+allmah:EpigraphicActorURIShape a sh:NodeShape ;
+    sh:targetClass allmah:EpigraphicActorURI ;
+    sh:property [ sh:path allmah:personName ; sh:datatype xsd:string ; ] ;
+    sh:property [ sh:path allmah:gender ; sh:datatype xsd:string ; ] .
+
+allmah:EpigraphicGroupURIShape a sh:NodeShape ;
+    sh:targetClass allmah:EpigraphicGroupURI ;
+    sh:property [ sh:path allmah:groupName ; sh:datatype xsd:string ; ] .

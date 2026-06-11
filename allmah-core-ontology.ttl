@@ -1,0 +1,1394 @@
+@prefix allmah: <https://classicmayan.org/allmah/ontology#> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms:<http://purl.org/dc/terms/> .
+@prefix skos:   <http://www.w3.org/2004/02/skos/core#> .
+
+<https://classicmayan.org/allmah/ontology>
+    a owl:Ontology ;
+    dcterms:title "ALLMAH Ontology Core"@en ;
+    dcterms:description "Core ontology for Classic Mayan document ingestion, glyph blocks, glyph elements, components, readings, interpretation levels, interpretation elements, candidates, provenance and document translations."@en ;
+    owl:versionInfo "0.7.0" .
+
+#################################################################
+# Upper-level modelling distinction
+#################################################################
+
+allmah:StructuralElement a owl:Class ;
+    rdfs:label "Structural element"@en ;
+    rdfs:comment "Something that belongs to the document or glyph structure: document, text field, block, group, component, glyph."@en .
+
+allmah:ScriptElement a owl:Class ;
+    rdfs:label "Script element"@en ;
+    rdfs:comment "Abstract script-related unit, such as sign, grapheme, letter or numeral."@en .
+
+allmah:InterpretationLevel a owl:Class ;
+    rdfs:label "Interpretation level"@en ;
+    rdfs:comment "An interpretative layer derived from structural elements, readings or previous levels."@en .
+
+allmah:ControlledValue a owl:Class ;
+    rdfs:label "Controlled value"@en .
+
+#################################################################
+# Corpus, document and metadata
+#################################################################
+
+allmah:Corpus a owl:Class ;
+    rdfs:subClassOf allmah:StructuralElement ;
+    rdfs:label "Corpus"@en .
+
+allmah:Document a owl:Class ;
+    rdfs:subClassOf allmah:StructuralElement ;
+    rdfs:label "Document"@en .
+
+allmah:MetadataRecord a owl:Class ;
+    rdfs:label "Metadata record"@en .
+
+allmah:Project a owl:Class ;
+    rdfs:label "Project"@en .
+
+allmah:Agent a owl:Class ;
+    rdfs:label "Agent"@en .
+
+allmah:Person a owl:Class ;
+    rdfs:subClassOf allmah:Agent ;
+    rdfs:label "Person"@en .
+
+allmah:Organization a owl:Class ;
+    rdfs:subClassOf allmah:Agent ;
+    rdfs:label "Organization"@en .
+
+#################################################################
+# Minimal TEI / document structure actually needed by parser
+#################################################################
+
+allmah:TextField a owl:Class ;
+    rdfs:subClassOf allmah:StructuralElement ;
+    rdfs:label "Text field"@en ;
+    rdfs:comment "A TEI div or equivalent text field containing hieroglyph blocks. Optional in the core import."@en .
+
+allmah:Surface a owl:Class ;
+    rdfs:subClassOf allmah:StructuralElement ;
+    rdfs:label "Surface"@en ;
+    rdfs:comment "Optional physical surface such as front, back, left side. Not identical with sign suffixes such as st, bt, bh."@en .
+
+allmah:HieroglyphBlock a owl:Class ;
+    rdfs:subClassOf allmah:StructuralElement ;
+    rdfs:label "Hieroglyph block"@en ;
+    rdfs:comment "A TEI ab element of type glyph-block or equivalent."@en .
+
+allmah:GapBlock a owl:Class ;
+    rdfs:subClassOf allmah:HieroglyphBlock ;
+    rdfs:label "Gap block"@en ;
+    rdfs:comment "A hieroglyph block whose TEI n value is '#', representing an unknown or missing block."@en .
+
+allmah:GlyphGroup a owl:Class ;
+    rdfs:subClassOf allmah:StructuralElement ;
+    rdfs:label "Glyph group"@en ;
+    rdfs:comment "An explicit group in the source encoding, for example TEI seg type='glyph-group'."@en .
+
+allmah:GlyphElement a owl:Class ;
+    rdfs:subClassOf allmah:StructuralElement ;
+    rdfs:label "Glyph element"@en ;
+    rdfs:comment "A glyph element, usually corresponding to a TEI g element."@en .
+
+#################################################################
+# Interpretation elements per level
+#################################################################
+
+allmah:InterpretationElement a owl:Class ;
+    rdfs:label "Interpretation element"@en ;
+    rdfs:comment "An element belonging to a specific interpretation level. Interpretation elements form derivation chains across levels."@en .
+
+allmah:AlphanumericElement a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationElement ;
+    rdfs:label "Alphanumeric element"@en ;
+    rdfs:comment "First interpretation element. Its parent element is a GlyphElement."@en .
+
+allmah:NumericElement a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationElement ;
+    rdfs:label "Numeric element"@en ;
+    rdfs:comment "Element of numeric transliteration derived from an alphanumeric element."@en .
+
+allmah:GraphematicElement a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationElement ;
+    rdfs:label "Graphematic element"@en ;
+    rdfs:comment "Element of graphematic transliteration derived from a numeric element."@en .
+
+allmah:GraphemicElement a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationElement ;
+    rdfs:label "Graphemic element"@en ;
+    rdfs:comment "Element of graphemic transliteration derived from a graphematic element."@en .
+
+allmah:PhonemicElement a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationElement ;
+    rdfs:label "Phonemic element"@en ;
+    rdfs:comment "Element of phonemic transcription derived from a graphemic element."@en .
+
+allmah:MorphologicalElement a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationElement ;
+    rdfs:label "Morphological element"@en ;
+    rdfs:comment "Element of morphological transcription derived from a phonemic element."@en .
+
+allmah:MorphophonemicElement a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationElement ;
+    rdfs:label "Morphophonemic element"@en ;
+    rdfs:comment "Element of morphophonemic transcription derived from a morphological element."@en .
+
+allmah:ConsolidatedTranscriptionElement a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationElement ;
+    rdfs:label "Consolidated transcription element"@en ;
+    rdfs:comment "Element of consolidated transcription derived from a morphophonemic or morphological element."@en .
+
+allmah:SyntacticDescriptionElement a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationElement ;
+    rdfs:label "Syntactic description element"@en .
+
+allmah:SemanticDescriptionElement a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationElement ;
+    rdfs:label "Semantic description element"@en .
+
+allmah:GlossingElement a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationElement ;
+    rdfs:label "Glossing element"@en .
+
+allmah:TranslationElement a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationElement ;
+    rdfs:label "Translation element"@en .
+
+allmah:Component a owl:Class ;
+    rdfs:subClassOf allmah:StructuralElement ;
+    rdfs:label "Component"@en ;
+    rdfs:comment "A non-sequential, interpretative selection of glyph elements treated as a unit."@en .
+
+allmah:GlyphRelation a owl:Class ;
+    rdfs:label "Glyph relation"@en ;
+    rdfs:comment "A reified relation between glyphs or structural elements. Needed because relations can have operators, renditions, order, source and target."@en .
+
+allmah:Operator a owl:Class ;
+    rdfs:label "Operator"@en .
+
+#################################################################
+# Script elements
+#################################################################
+
+allmah:Sign a owl:Class ;
+    rdfs:subClassOf allmah:ScriptElement ;
+    rdfs:label "Sign"@en .
+
+allmah:Grapheme a owl:Class ;
+    rdfs:subClassOf allmah:ScriptElement ;
+    rdfs:label "Grapheme"@en .
+
+allmah:Letter a owl:Class ;
+    rdfs:subClassOf allmah:ScriptElement ;
+    rdfs:label "Letter"@en .
+
+allmah:Numeral a owl:Class ;
+    rdfs:subClassOf allmah:ScriptElement ;
+    rdfs:label "Numeral"@en .
+
+#################################################################
+# Reading and candidate model
+#################################################################
+
+allmah:DocumentReading a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationLevel ;
+    rdfs:label "Document reading"@en ;
+    rdfs:comment "A complete or partial reading path through one or more hieroglyph blocks."@en .
+
+allmah:ConcatenatedDocumentReading a owl:Class ;
+    rdfs:subClassOf allmah:DocumentReading ;
+    rdfs:label "Concatenated document reading"@en ;
+    rdfs:comment "A document reading generated by concatenating several hieroglyph blocks, normally using the operator '.'."@en .
+
+allmah:ReadingLevel a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationLevel ;
+    rdfs:label "Reading level"@en .
+
+allmah:Reading a owl:Class ;
+    rdfs:subClassOf allmah:ReadingLevel ;
+    rdfs:label "Reading"@en .
+
+allmah:ReadingAssignment a owl:Class ;
+    rdfs:label "Reading assignment"@en ;
+    rdfs:comment "Connects a glyph or component to a reading with a role such as possible, initial, selected or rejected."@en .
+
+allmah:ScholarlyAssertion a owl:Class ;
+    rdfs:label "Scholarly assertion"@en ;
+    rdfs:comment "A user- or system-created interpretative assertion that may carry creator, comment and confidence metadata."@en .
+
+allmah:Candidate a owl:Class ;
+    rdfs:subClassOf allmah:ScholarlyAssertion ;
+    rdfs:label "Candidate"@en ;
+    rdfs:comment "An automatically generated or manually created candidate interpretation at any interpretation level."@en .
+
+allmah:ManualVariant a owl:Class ;
+    rdfs:subClassOf allmah:Candidate ;
+    rdfs:label "Manual variant"@en ;
+    rdfs:comment "A manually created variant. It must carry provenance, comment and confidence."@en .
+
+allmah:FrozenCandidate a owl:Class ;
+    rdfs:subClassOf allmah:Candidate ;
+    rdfs:label "Frozen candidate"@en .
+
+#################################################################
+# Interpretation levels
+#################################################################
+
+allmah:Transliteration a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationLevel ;
+    rdfs:label "Transliteration"@en .
+
+allmah:AlphanumericTransliteration a owl:Class ;
+    rdfs:subClassOf allmah:Transliteration ;
+    rdfs:label "Alphanumeric transliteration"@en ;
+    rdfs:comment "Former Numerical Transliteration 1."@en .
+
+allmah:NumericTransliteration a owl:Class ;
+    rdfs:subClassOf allmah:Transliteration ;
+    rdfs:label "Numeric transliteration"@en ;
+    rdfs:comment "Former Numerical Transliteration 2."@en .
+
+allmah:GraphematicTransliteration a owl:Class ;
+    rdfs:subClassOf allmah:Transliteration ;
+    rdfs:label "Graphematic transliteration"@en ;
+    rdfs:comment "Former Graphical Transliteration 1."@en .
+
+allmah:GraphemicTransliteration a owl:Class ;
+    rdfs:subClassOf allmah:Transliteration ;
+    rdfs:label "Graphemic transliteration"@en ;
+    rdfs:comment "Former Graphical Transliteration 2."@en .
+
+allmah:Transcription a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationLevel ;
+    rdfs:label "Transcription"@en .
+
+allmah:PhonemicTranscription a owl:Class ;
+    rdfs:subClassOf allmah:Transcription ;
+    rdfs:label "Phonemic transcription"@en .
+
+allmah:MorphologicalTranscription a owl:Class ;
+    rdfs:subClassOf allmah:Transcription ;
+    rdfs:label "Morphological transcription"@en .
+
+allmah:MorphophonemicTranscription a owl:Class ;
+    rdfs:subClassOf allmah:Transcription ;
+    rdfs:label "Morphophonemic transcription"@en .
+
+allmah:ConsolidatedTranscription a owl:Class ;
+    rdfs:subClassOf allmah:Transcription ;
+    rdfs:label "Consolidated transcription"@en .
+
+allmah:LinguisticDescription a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationLevel ;
+    rdfs:label "Linguistic description"@en .
+
+allmah:SyntacticDescription a owl:Class ;
+    rdfs:subClassOf allmah:LinguisticDescription ;
+    rdfs:label "Syntactic description"@en .
+
+allmah:SemanticDescription a owl:Class ;
+    rdfs:subClassOf allmah:LinguisticDescription ;
+    rdfs:label "Semantic description"@en .
+
+allmah:MorphosyntacticGlossing a owl:Class ;
+    rdfs:subClassOf allmah:LinguisticDescription ;
+    rdfs:label "Morphosyntactic glossing"@en .
+
+allmah:Translation a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationLevel ;
+    rdfs:label "Translation"@en .
+
+allmah:BlockTranslation a owl:Class ;
+    rdfs:subClassOf allmah:Translation ;
+    rdfs:label "Block translation"@en .
+
+allmah:DocumentTranslation a owl:Class ;
+    rdfs:subClassOf allmah:Translation ;
+    rdfs:label "Document translation"@en ;
+    rdfs:comment "A whole-document translation assembled from block translations and optionally edited."@en .
+
+#################################################################
+# Linguistic annotation support
+#################################################################
+
+allmah:SyntacticAnnotation a owl:Class ;
+    rdfs:label "Syntactic annotation"@en .
+
+allmah:SyntacticFeature a owl:Class ;
+    rdfs:label "Syntactic feature"@en .
+
+allmah:SemanticAnnotation a owl:Class ;
+    rdfs:label "Semantic annotation"@en .
+
+allmah:DictionaryEntry a owl:Class ;
+    rdfs:label "Dictionary entry"@en .
+
+#################################################################
+# Controlled value classes
+#################################################################
+
+allmah:SourceType a owl:Class ; rdfs:subClassOf allmah:ControlledValue ; rdfs:label "Source type"@en .
+allmah:ImportState a owl:Class ; rdfs:subClassOf allmah:ControlledValue ; rdfs:label "Import state"@en .
+allmah:ReadingRole a owl:Class ; rdfs:subClassOf allmah:ControlledValue ; rdfs:label "Reading role"@en .
+allmah:CandidateStatus a owl:Class ; rdfs:subClassOf allmah:ControlledValue ; rdfs:label "Candidate status"@en .
+allmah:ConfidenceLevel a owl:Class ; rdfs:subClassOf allmah:ControlledValue ; rdfs:label "Confidence level"@en .
+allmah:GenerationMode a owl:Class ; rdfs:subClassOf allmah:ControlledValue ; rdfs:label "Generation mode"@en .
+allmah:InterpretationLevelType a owl:Class ; rdfs:subClassOf allmah:ControlledValue ; rdfs:label "Interpretation level type"@en .
+allmah:GlyphRenditionType a owl:Class ; rdfs:subClassOf allmah:ControlledValue ; rdfs:label "Glyph rendition type"@en .
+allmah:OperatorType a owl:Class ; rdfs:subClassOf allmah:ControlledValue ; rdfs:label "Operator type"@en .
+allmah:OperatorScope a owl:Class ; rdfs:subClassOf allmah:ControlledValue ; rdfs:label "Operator scope"@en .
+allmah:GlyphType a owl:Class ; rdfs:subClassOf allmah:ControlledValue ; rdfs:label "Glyph type"@en .
+
+#################################################################
+# Controlled value individuals
+#################################################################
+
+# Source types
+allmah:LocalXmlSource a owl:NamedIndividual, allmah:SourceType ; skos:prefLabel "Local XML"@en .
+allmah:TextGridSource a owl:NamedIndividual, allmah:SourceType ; skos:prefLabel "TextGrid"@en .
+allmah:GraphDbSource a owl:NamedIndividual, allmah:SourceType ; skos:prefLabel "GraphDB"@en .
+
+# Import states
+allmah:Imported a owl:NamedIndividual, allmah:ImportState ; skos:prefLabel "Imported"@en .
+allmah:Parsed a owl:NamedIndividual, allmah:ImportState ; skos:prefLabel "Parsed"@en .
+allmah:Validated a owl:NamedIndividual, allmah:ImportState ; skos:prefLabel "Validated"@en .
+allmah:ImportFailed a owl:NamedIndividual, allmah:ImportState ; skos:prefLabel "Import failed"@en .
+
+# Reading roles
+allmah:PossibleReading a owl:NamedIndividual, allmah:ReadingRole ; skos:prefLabel "Possible reading"@en .
+allmah:InitialReading a owl:NamedIndividual, allmah:ReadingRole ; skos:prefLabel "Initial reading"@en .
+allmah:SelectedReading a owl:NamedIndividual, allmah:ReadingRole ; skos:prefLabel "Selected reading"@en .
+allmah:RejectedReading a owl:NamedIndividual, allmah:ReadingRole ; skos:prefLabel "Rejected reading"@en .
+
+# Candidate statuses
+allmah:ActiveStatus a owl:NamedIndividual, allmah:CandidateStatus ; skos:prefLabel "Active"@en .
+allmah:FrozenStatus a owl:NamedIndividual, allmah:CandidateStatus ; skos:prefLabel "Frozen"@en .
+allmah:DiscardedStatus a owl:NamedIndividual, allmah:CandidateStatus ; skos:prefLabel "Discarded"@en .
+allmah:SupersededStatus a owl:NamedIndividual, allmah:CandidateStatus ; skos:prefLabel "Superseded"@en .
+
+# Confidence levels
+allmah:Confidence1 a owl:NamedIndividual, allmah:ConfidenceLevel ;
+    allmah:confidenceNumericValue 1 ;
+    skos:prefLabel "1 - very uncertain"@en .
+
+allmah:Confidence2 a owl:NamedIndividual, allmah:ConfidenceLevel ;
+    allmah:confidenceNumericValue 2 ;
+    skos:prefLabel "2 - uncertain"@en .
+
+allmah:Confidence3 a owl:NamedIndividual, allmah:ConfidenceLevel ;
+    allmah:confidenceNumericValue 3 ;
+    skos:prefLabel "3 - plausible"@en .
+
+allmah:Confidence4 a owl:NamedIndividual, allmah:ConfidenceLevel ;
+    allmah:confidenceNumericValue 4 ;
+    skos:prefLabel "4 - likely"@en .
+
+allmah:Confidence5 a owl:NamedIndividual, allmah:ConfidenceLevel ;
+    allmah:confidenceNumericValue 5 ;
+    skos:prefLabel "5 - very likely"@en .
+
+# Generation modes
+allmah:AutomaticGeneration a owl:NamedIndividual, allmah:GenerationMode ; skos:prefLabel "Automatic"@en .
+allmah:ManualGeneration a owl:NamedIndividual, allmah:GenerationMode ; skos:prefLabel "Manual"@en .
+allmah:ImportedGeneration a owl:NamedIndividual, allmah:GenerationMode ; skos:prefLabel "Imported"@en .
+
+# Interpretation level types
+allmah:ReadingLevelType a owl:NamedIndividual, allmah:InterpretationLevelType ; skos:prefLabel "Reading"@en .
+allmah:AlphanumericLevelType a owl:NamedIndividual, allmah:InterpretationLevelType ; skos:prefLabel "Alphanumeric transliteration"@en .
+allmah:NumericLevelType a owl:NamedIndividual, allmah:InterpretationLevelType ; skos:prefLabel "Numeric transliteration"@en .
+allmah:GraphematicLevelType a owl:NamedIndividual, allmah:InterpretationLevelType ; skos:prefLabel "Graphematic transliteration"@en .
+allmah:GraphemicLevelType a owl:NamedIndividual, allmah:InterpretationLevelType ; skos:prefLabel "Graphemic transliteration"@en .
+allmah:PhonemicLevelType a owl:NamedIndividual, allmah:InterpretationLevelType ; skos:prefLabel "Phonemic transcription"@en .
+allmah:MorphologicalLevelType a owl:NamedIndividual, allmah:InterpretationLevelType ; skos:prefLabel "Morphological transcription"@en .
+allmah:MorphophonemicLevelType a owl:NamedIndividual, allmah:InterpretationLevelType ; skos:prefLabel "Morphophonemic transcription"@en .
+allmah:ConsolidatedLevelType a owl:NamedIndividual, allmah:InterpretationLevelType ; skos:prefLabel "Consolidated transcription"@en .
+allmah:SyntacticLevelType a owl:NamedIndividual, allmah:InterpretationLevelType ; skos:prefLabel "Syntactic description"@en .
+allmah:SemanticLevelType a owl:NamedIndividual, allmah:InterpretationLevelType ; skos:prefLabel "Semantic description"@en .
+allmah:GlossingLevelType a owl:NamedIndividual, allmah:InterpretationLevelType ; skos:prefLabel "Morphosyntactic glossing"@en .
+allmah:TranslationLevelType a owl:NamedIndividual, allmah:InterpretationLevelType ; skos:prefLabel "Translation"@en .
+
+# Glyph rendition types from TEI examples
+allmah:Above a owl:NamedIndividual, allmah:GlyphRenditionType ; skos:prefLabel "above"@en .
+allmah:Beneath a owl:NamedIndividual, allmah:GlyphRenditionType ; skos:prefLabel "beneath"@en .
+allmah:AttachedAtTopLeft a owl:NamedIndividual, allmah:GlyphRenditionType ; skos:prefLabel "attached_at_top_left"@en .
+allmah:IsAdjoinedTo a owl:NamedIndividual, allmah:GlyphRenditionType ; skos:prefLabel "is_adjoined_to"@en .
+allmah:Encloses a owl:NamedIndividual, allmah:GlyphRenditionType ; skos:prefLabel "encloses"@en .
+allmah:InfixedIn a owl:NamedIndividual, allmah:GlyphRenditionType ; skos:prefLabel "infixed_in"@en .
+allmah:LeftBeside a owl:NamedIndividual, allmah:GlyphRenditionType ; skos:prefLabel "left_beside"@en .
+allmah:RightBeside a owl:NamedIndividual, allmah:GlyphRenditionType ; skos:prefLabel "right_beside"@en .
+allmah:UnknownRendition a owl:NamedIndividual, allmah:GlyphRenditionType ; skos:prefLabel "unknown rendition"@en .
+
+# Operators
+
+# Operator scopes
+allmah:AlphanumericOperatorScope a owl:NamedIndividual, allmah:OperatorScope ; skos:prefLabel "alphanumeric/numeric/graphematic operator scope"@en .
+allmah:GraphemicOperatorScope a owl:NamedIndividual, allmah:OperatorScope ; skos:prefLabel "graphemic operator scope"@en .
+allmah:PhonemicOperatorScope a owl:NamedIndividual, allmah:OperatorScope ; skos:prefLabel "phonemic operator scope"@en .
+allmah:MorphologicalOperatorScope a owl:NamedIndividual, allmah:OperatorScope ; skos:prefLabel "morphological transcription operator scope"@en .
+allmah:ConsolidatedOperatorScope a owl:NamedIndividual, allmah:OperatorScope ; skos:prefLabel "consolidated transcription operator scope"@en .
+allmah:GlossingOperatorScope a owl:NamedIndividual, allmah:OperatorScope ; skos:prefLabel "morphosyntactic glossing operator scope"@en .
+
+allmah:EmptyOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol " " ;
+    skos:prefLabel "empty/space operator"@en ;
+    allmah:validInOperatorScope allmah:GraphemicOperatorScope, allmah:PhonemicOperatorScope, allmah:MorphologicalOperatorScope, allmah:ConsolidatedOperatorScope, allmah:GlossingOperatorScope .
+
+allmah:ColonOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol ":" ;
+    skos:prefLabel "colon operator"@en ;
+    allmah:validInOperatorScope allmah:AlphanumericOperatorScope, allmah:GlossingOperatorScope .
+
+allmah:DotOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "." ;
+    skos:prefLabel "dot operator"@en ;
+    allmah:validInOperatorScope allmah:AlphanumericOperatorScope, allmah:GlossingOperatorScope .
+
+allmah:PlusOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "+" ;
+    skos:prefLabel "plus operator"@en ;
+    allmah:validInOperatorScope allmah:AlphanumericOperatorScope, allmah:PhonemicOperatorScope, allmah:MorphologicalOperatorScope, allmah:ConsolidatedOperatorScope, allmah:GlossingOperatorScope .
+
+allmah:DegreeOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "°" ;
+    skos:prefLabel "degree operator"@en ;
+    allmah:validInOperatorScope allmah:AlphanumericOperatorScope .
+
+allmah:TopLeftOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "┌" ;
+    skos:prefLabel "top-left operator"@en ;
+    allmah:validInOperatorScope allmah:AlphanumericOperatorScope .
+
+allmah:TopRightOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "┐" ;
+    skos:prefLabel "top-right operator"@en ;
+    allmah:validInOperatorScope allmah:AlphanumericOperatorScope .
+
+allmah:HyphenOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "-" ;
+    skos:prefLabel "hyphen operator"@en ;
+    allmah:validInOperatorScope allmah:AlphanumericOperatorScope, allmah:GraphemicOperatorScope, allmah:PhonemicOperatorScope, allmah:MorphologicalOperatorScope, allmah:ConsolidatedOperatorScope, allmah:GlossingOperatorScope .
+
+allmah:EqualsOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "=" ;
+    skos:prefLabel "equals operator"@en ;
+    allmah:validInOperatorScope allmah:PhonemicOperatorScope .
+
+allmah:PhonemicGenericEOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "E" ;
+    skos:prefLabel "generic phonemic operator E"@en ;
+    allmah:validInOperatorScope allmah:PhonemicOperatorScope .
+
+allmah:UpArrowOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "↑" ;
+    skos:prefLabel "up-arrow operator"@en ;
+    allmah:validInOperatorScope allmah:PhonemicOperatorScope .
+
+allmah:TildeOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "~" ;
+    skos:prefLabel "tilde operator"@en ;
+    allmah:validInOperatorScope allmah:MorphologicalOperatorScope, allmah:ConsolidatedOperatorScope, allmah:GlossingOperatorScope .
+
+allmah:SquareBracketOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "[ ]" ;
+    skos:prefLabel "square bracket operator"@en ;
+    rdfs:comment "Marks text enclosed in square brackets."@en ;
+    allmah:validInOperatorScope allmah:MorphologicalOperatorScope, allmah:ConsolidatedOperatorScope, allmah:GlossingOperatorScope .
+
+allmah:CurlyBracketOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "{ }" ;
+    skos:prefLabel "curly bracket operator"@en ;
+    rdfs:comment "Marks text enclosed in curly brackets."@en ;
+    allmah:validInOperatorScope allmah:MorphologicalOperatorScope, allmah:ConsolidatedOperatorScope, allmah:GlossingOperatorScope .
+
+allmah:PipeOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "| |" ;
+    skos:prefLabel "pipe enclosure operator"@en ;
+    rdfs:comment "Marks text enclosed in vertical bars."@en ;
+    allmah:validInOperatorScope allmah:MorphologicalOperatorScope, allmah:ConsolidatedOperatorScope, allmah:GlossingOperatorScope .
+
+allmah:LessThanOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "<" ;
+    skos:prefLabel "less-than operator"@en ;
+    allmah:validInOperatorScope allmah:MorphologicalOperatorScope, allmah:ConsolidatedOperatorScope, allmah:GlossingOperatorScope .
+
+allmah:GreaterThanOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol ">" ;
+    skos:prefLabel "greater-than operator"@en ;
+    allmah:validInOperatorScope allmah:MorphologicalOperatorScope, allmah:ConsolidatedOperatorScope, allmah:GlossingOperatorScope .
+
+allmah:ConsonantOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "C" ;
+    skos:prefLabel "consonant operator"@en ;
+    allmah:validInOperatorScope allmah:MorphologicalOperatorScope, allmah:ConsolidatedOperatorScope, allmah:GlossingOperatorScope .
+
+allmah:VowelOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "V" ;
+    skos:prefLabel "vowel operator"@en ;
+    allmah:validInOperatorScope allmah:MorphologicalOperatorScope, allmah:ConsolidatedOperatorScope, allmah:GlossingOperatorScope .
+
+allmah:HOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "H" ;
+    skos:prefLabel "H operator"@en ;
+    allmah:validInOperatorScope allmah:MorphologicalOperatorScope, allmah:ConsolidatedOperatorScope, allmah:GlossingOperatorScope .
+
+allmah:ZeroOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "Ø" ;
+    skos:prefLabel "zero operator"@en ;
+    rdfs:comment "Valid for morphological and consolidated transcription, but not for morphosyntactic glossing."@en ;
+    allmah:validInOperatorScope allmah:MorphologicalOperatorScope, allmah:ConsolidatedOperatorScope .
+
+allmah:CaretOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "^" ;
+    skos:prefLabel "caret operator"@en ;
+    allmah:validInOperatorScope allmah:AlphanumericOperatorScope .
+
+allmah:BottomRightOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "╝" ;
+    skos:prefLabel "bottom-right operator"@en ;
+    allmah:validInOperatorScope allmah:AlphanumericOperatorScope .
+
+allmah:BottomLeftOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "╚" ;
+    skos:prefLabel "bottom-left operator"@en ;
+    allmah:validInOperatorScope allmah:AlphanumericOperatorScope .
+
+allmah:UpperRightCornerOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "╗" ;
+    skos:prefLabel "upper-right corner operator"@en ;
+    allmah:validInOperatorScope allmah:AlphanumericOperatorScope .
+
+allmah:UpperLeftCornerOperator a owl:NamedIndividual, allmah:OperatorType ;
+    allmah:operatorSymbol "╔" ;
+    skos:prefLabel "upper-left corner operator"@en ;
+    allmah:validInOperatorScope allmah:AlphanumericOperatorScope .
+
+# Glyph suffix/type markers from catalogue numbers, extendable after parser review
+allmah:ST a owl:NamedIndividual, allmah:GlyphType ; skos:prefLabel "st" .
+allmah:BT a owl:NamedIndividual, allmah:GlyphType ; skos:prefLabel "bt" .
+allmah:BH a owl:NamedIndividual, allmah:GlyphType ; skos:prefLabel "bh" .
+allmah:BB a owl:NamedIndividual, allmah:GlyphType ; skos:prefLabel "bb" .
+allmah:TF a owl:NamedIndividual, allmah:GlyphType ; skos:prefLabel "tf" .
+allmah:VC a owl:NamedIndividual, allmah:GlyphType ; skos:prefLabel "vc" .
+allmah:BV a owl:NamedIndividual, allmah:GlyphType ; skos:prefLabel "bv" .
+
+#################################################################
+# Object properties with inverses for Protégé/OntoGraf visibility
+#################################################################
+
+allmah:hasStructuralPart a owl:ObjectProperty ;
+    rdfs:domain allmah:StructuralElement ;
+    rdfs:range allmah:StructuralElement ;
+    owl:inverseOf allmah:isStructuralPartOf ;
+    rdfs:label "has structural part"@en .
+
+allmah:isStructuralPartOf a owl:ObjectProperty ;
+    rdfs:domain allmah:StructuralElement ;
+    rdfs:range allmah:StructuralElement ;
+    rdfs:label "is structural part of"@en .
+
+allmah:hasDocument a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasStructuralPart ;
+    rdfs:domain allmah:Corpus ;
+    rdfs:range allmah:Document ;
+    owl:inverseOf allmah:isDocumentInCorpus ;
+    rdfs:label "has document"@en .
+
+allmah:isDocumentInCorpus a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:isStructuralPartOf ;
+    rdfs:domain allmah:Document ;
+    rdfs:range allmah:Corpus .
+
+allmah:hasMetadataRecord a owl:ObjectProperty ;
+    rdfs:domain allmah:Document ;
+    rdfs:range allmah:MetadataRecord ;
+    owl:inverseOf allmah:isMetadataRecordOf ;
+    rdfs:label "has metadata record"@en .
+
+allmah:isMetadataRecordOf a owl:ObjectProperty ;
+    rdfs:domain allmah:MetadataRecord ;
+    rdfs:range allmah:Document .
+
+allmah:belongsToProject a owl:ObjectProperty ;
+    rdfs:domain allmah:MetadataRecord ;
+    rdfs:range allmah:Project .
+
+allmah:hasContributor a owl:ObjectProperty ;
+    rdfs:domain allmah:MetadataRecord ;
+    rdfs:range allmah:Agent .
+
+allmah:hasSourceType a owl:ObjectProperty ;
+    rdfs:domain allmah:MetadataRecord ;
+    rdfs:range allmah:SourceType .
+
+allmah:hasImportState a owl:ObjectProperty ;
+    rdfs:domain allmah:MetadataRecord ;
+    rdfs:range allmah:ImportState .
+
+allmah:hasSurface a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasStructuralPart ;
+    rdfs:domain allmah:Document ;
+    rdfs:range allmah:Surface ;
+    owl:inverseOf allmah:isSurfaceOf .
+
+allmah:isSurfaceOf a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:isStructuralPartOf ;
+    rdfs:domain allmah:Surface ;
+    rdfs:range allmah:Document .
+
+allmah:hasTextField a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasStructuralPart ;
+    rdfs:domain allmah:Document ;
+    rdfs:range allmah:TextField ;
+    owl:inverseOf allmah:isTextFieldOf .
+
+allmah:isTextFieldOf a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:isStructuralPartOf ;
+    rdfs:domain allmah:TextField ;
+    rdfs:range allmah:Document .
+
+allmah:hasBlock a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasStructuralPart ;
+    rdfs:domain allmah:Document ;
+    rdfs:range allmah:HieroglyphBlock ;
+    owl:inverseOf allmah:isBlockOfDocument .
+
+allmah:isBlockOfDocument a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:isStructuralPartOf ;
+    rdfs:domain allmah:HieroglyphBlock ;
+    rdfs:range allmah:Document .
+
+allmah:hasBlockInTextField a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasStructuralPart ;
+    rdfs:domain allmah:TextField ;
+    rdfs:range allmah:HieroglyphBlock ;
+    owl:inverseOf allmah:isBlockInTextField .
+
+allmah:isBlockInTextField a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:isStructuralPartOf ;
+    rdfs:domain allmah:HieroglyphBlock ;
+    rdfs:range allmah:TextField .
+
+allmah:hasGlyphElement a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasStructuralPart ;
+    rdfs:domain allmah:HieroglyphBlock ;
+    rdfs:range allmah:GlyphElement ;
+    owl:inverseOf allmah:isGlyphElementOfBlock .
+
+allmah:isGlyphElementOfBlock a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:isStructuralPartOf ;
+    rdfs:domain allmah:GlyphElement ;
+    rdfs:range allmah:HieroglyphBlock .
+
+allmah:hasGlyphGroup a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasStructuralPart ;
+    rdfs:domain allmah:HieroglyphBlock ;
+    rdfs:range allmah:GlyphGroup ;
+    owl:inverseOf allmah:isGlyphGroupOfBlock .
+
+allmah:isGlyphGroupOfBlock a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:isStructuralPartOf ;
+    rdfs:domain allmah:GlyphGroup ;
+    rdfs:range allmah:HieroglyphBlock .
+
+allmah:hasComponent a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasStructuralPart ;
+    rdfs:domain allmah:HieroglyphBlock ;
+    rdfs:range allmah:Component ;
+    owl:inverseOf allmah:isComponentOfBlock .
+
+allmah:isComponentOfBlock a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:isStructuralPartOf ;
+    rdfs:domain allmah:Component ;
+    rdfs:range allmah:HieroglyphBlock .
+
+allmah:hasComponentMember a owl:ObjectProperty ;
+    rdfs:domain allmah:Component ;
+    rdfs:range allmah:GlyphElement ;
+    owl:inverseOf allmah:isComponentMemberOf ;
+    rdfs:comment "Component membership is not necessarily sequential."@en .
+
+allmah:isComponentMemberOf a owl:ObjectProperty ;
+    rdfs:domain allmah:GlyphElement ;
+    rdfs:range allmah:Component .
+
+allmah:hasGraphemicComponent a owl:ObjectProperty ;
+    rdfs:domain allmah:GraphemicElement ;
+    rdfs:range allmah:Component ;
+    rdfs:label "has graphemic component"@en ;
+    rdfs:comment "Optional link from a graphemic element to a document-specific discontinuous component. The normal parent GT1/GraphematicElement relation remains stored with allmah:hasParentElement."@en .
+
+allmah:isGraphemicComponentOf a owl:ObjectProperty ;
+    rdfs:domain allmah:Component ;
+    rdfs:range allmah:GraphemicElement ;
+    owl:inverseOf allmah:hasGraphemicComponent ;
+    rdfs:label "is graphemic component of"@en .
+
+
+allmah:hasGlyphRelation a owl:ObjectProperty ;
+    rdfs:domain allmah:HieroglyphBlock ;
+    rdfs:range allmah:GlyphRelation .
+
+allmah:sourceGlyph a owl:ObjectProperty ;
+    rdfs:domain allmah:GlyphRelation ;
+    rdfs:range allmah:GlyphElement .
+
+allmah:targetGlyph a owl:ObjectProperty ;
+    rdfs:domain allmah:GlyphRelation ;
+    rdfs:range allmah:GlyphElement .
+
+allmah:hasRenditionType a owl:ObjectProperty ;
+    rdfs:domain allmah:GlyphRelation ;
+    rdfs:range allmah:GlyphRenditionType .
+
+allmah:hasOperatorType a owl:ObjectProperty ;
+    rdfs:range allmah:OperatorType .
+
+allmah:hasSource a owl:ObjectProperty ;
+    rdfs:label "has source"@en .
+
+allmah:hasTarget a owl:ObjectProperty ;
+    rdfs:label "has target"@en .
+
+allmah:hasOperator a owl:ObjectProperty ;
+    rdfs:range allmah:OperatorType ;
+    rdfs:label "has operator"@en .
+
+allmah:hasGlyphType a owl:ObjectProperty ;
+    rdfs:domain allmah:GlyphElement ;
+    rdfs:range allmah:GlyphType .
+
+allmah:hasInterpretationLevel a owl:ObjectProperty ;
+    rdfs:domain allmah:StructuralElement ;
+    rdfs:range allmah:InterpretationLevel ;
+    owl:inverseOf allmah:interpretsStructuralElement .
+
+allmah:interpretsStructuralElement a owl:ObjectProperty ;
+    rdfs:domain allmah:InterpretationLevel ;
+    rdfs:range allmah:StructuralElement .
+
+allmah:hasReadingAssignment a owl:ObjectProperty ;
+    rdfs:domain owl:Thing ;
+    rdfs:range allmah:ReadingAssignment ;
+    rdfs:comment "Links a glyph-level or interpretation-level element to a reading assignment. GlyphElement uses this for catalogue/import readings; NumericElement uses it for document-specific selected readings."@en .
+
+allmah:assignedReading a owl:ObjectProperty ;
+    rdfs:domain allmah:ReadingAssignment ;
+    rdfs:range allmah:Reading .
+
+allmah:hasReadingRole a owl:ObjectProperty ;
+    rdfs:domain allmah:ReadingAssignment ;
+    rdfs:range allmah:ReadingRole .
+
+allmah:hasDocumentReading a owl:ObjectProperty ;
+    rdfs:domain allmah:Document ;
+    rdfs:range allmah:DocumentReading ;
+    owl:inverseOf allmah:isDocumentReadingOf .
+
+allmah:isDocumentReadingOf a owl:ObjectProperty ;
+    rdfs:domain allmah:DocumentReading ;
+    rdfs:range allmah:Document .
+
+allmah:usesBlock a owl:ObjectProperty ;
+    rdfs:domain allmah:DocumentReading ;
+    rdfs:range allmah:HieroglyphBlock .
+
+allmah:hasCandidate a owl:ObjectProperty ;
+    rdfs:range allmah:Candidate .
+
+allmah:hasCandidateStatus a owl:ObjectProperty ;
+    rdfs:domain allmah:Candidate ;
+    rdfs:range allmah:CandidateStatus .
+
+allmah:hasGenerationMode a owl:ObjectProperty ;
+    rdfs:domain allmah:Candidate ;
+    rdfs:range allmah:GenerationMode .
+
+allmah:generatedFrom a owl:ObjectProperty ;
+    rdfs:domain allmah:Candidate .
+
+allmah:derivedFrom a owl:ObjectProperty .
+
+allmah:nextInterpretationLevel a owl:ObjectProperty ;
+    rdfs:domain allmah:InterpretationLevel ;
+    rdfs:range allmah:InterpretationLevel ;
+    rdfs:comment "Convenience link for pipeline order. The stricter parent relation is hasParentInterpretationLevel."@en .
+
+allmah:hasInterpretationLevelType a owl:ObjectProperty ;
+    rdfs:domain allmah:InterpretationLevel ;
+    rdfs:range allmah:InterpretationLevelType .
+
+allmah:hasBlockTranslation a owl:ObjectProperty ;
+    rdfs:domain allmah:HieroglyphBlock ;
+    rdfs:range allmah:BlockTranslation .
+
+allmah:hasDocumentTranslation a owl:ObjectProperty ;
+    rdfs:domain allmah:Document ;
+    rdfs:range allmah:DocumentTranslation .
+
+allmah:assembledFromBlockTranslation a owl:ObjectProperty ;
+    rdfs:domain allmah:DocumentTranslation ;
+    rdfs:range allmah:BlockTranslation .
+
+allmah:hasSyntacticAnnotation a owl:ObjectProperty ;
+    rdfs:range allmah:SyntacticAnnotation .
+
+allmah:hasSemanticAnnotation a owl:ObjectProperty ;
+    rdfs:range allmah:SemanticAnnotation .
+
+allmah:hasDictionaryEntry a owl:ObjectProperty ;
+    rdfs:range allmah:DictionaryEntry .
+
+allmah:representsScriptElement a owl:ObjectProperty ;
+    rdfs:domain allmah:InterpretationLevel ;
+    rdfs:range allmah:ScriptElement .
+
+allmah:hasAlphanumericTransliteration a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasInterpretationLevel ;
+    rdfs:domain allmah:StructuralElement ;
+    rdfs:range allmah:AlphanumericTransliteration ;
+    rdfs:label "has alphanumeric transliteration"@en .
+
+allmah:hasAlphanumericTransliteration a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasInterpretationLevel ;
+    rdfs:domain allmah:HieroglyphBlock ;
+    rdfs:range allmah:AlphanumericTransliteration ;
+    rdfs:label "has alphanumeric transliteration"@en .
+
+allmah:hasAlphanumericElement a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasInterpretationElement ;
+    rdfs:domain allmah:AlphanumericTransliteration ;
+    rdfs:range allmah:AlphanumericElement ;
+    rdfs:label "has alphanumeric element"@en .
+
+allmah:hasNumericTransliteration a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasInterpretationLevel ;
+    rdfs:domain allmah:AlphanumericTransliteration ;
+    rdfs:range allmah:NumericTransliteration ;
+    rdfs:label "has numeric transliteration"@en .
+
+allmah:hasNumericElement a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasInterpretationElement ;
+    rdfs:domain allmah:NumericTransliteration ;
+    rdfs:range allmah:NumericElement ;
+    rdfs:label "has numeric element"@en .
+
+allmah:hasGraphematicTransliteration a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasInterpretationLevel ;
+    rdfs:domain allmah:NumericTransliteration ;
+    rdfs:range allmah:GraphematicTransliteration ;
+    rdfs:label "has graphematic transliteration"@en .
+
+allmah:hasGraphematicElement a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasInterpretationElement ;
+    rdfs:domain allmah:GraphematicTransliteration ;
+    rdfs:range allmah:GraphematicElement ;
+    rdfs:label "has graphematic element"@en .
+
+allmah:hasGraphemicTransliteration a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasInterpretationLevel ;
+    rdfs:domain allmah:GraphematicTransliteration ;
+    rdfs:range allmah:GraphemicTransliteration ;
+    rdfs:label "has graphemic transliteration"@en .
+
+allmah:hasGraphemicElement a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasInterpretationElement ;
+    rdfs:domain allmah:GraphemicTransliteration ;
+    rdfs:range allmah:GraphemicElement ;
+    rdfs:label "has graphemic element"@en .
+
+allmah:hasPhonemicTranscription a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasInterpretationLevel ;
+    rdfs:domain allmah:GraphemicTransliteration ;
+    rdfs:range allmah:PhonemicTranscription ;
+    rdfs:label "has phonemic transcription"@en .
+
+allmah:hasPhonemicElement a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasInterpretationElement ;
+    rdfs:domain allmah:PhonemicTranscription ;
+    rdfs:range allmah:PhonemicElement ;
+    rdfs:label "has phonemic element"@en .
+
+allmah:hasPhonemicRelation a owl:ObjectProperty ;
+    rdfs:domain allmah:PhonemicTranscription ;
+    rdfs:range allmah:PhonemicRelation ;
+    rdfs:label "has phonemic relation"@en .
+#################################################################
+# Parent / ancestor links for interpretation levels and elements
+#################################################################
+
+allmah:hasParentInterpretationLevel a owl:ObjectProperty ;
+    rdfs:domain allmah:InterpretationLevel ;
+    rdfs:range allmah:InterpretationLevel ;
+    owl:inverseOf allmah:hasChildInterpretationLevel ;
+    rdfs:label "has parent interpretation level"@en ;
+    rdfs:comment "Connects each interpretation level to the immediately preceding level in the pipeline."@en .
+
+allmah:hasChildInterpretationLevel a owl:ObjectProperty ;
+    rdfs:domain allmah:InterpretationLevel ;
+    rdfs:range allmah:InterpretationLevel ;
+    rdfs:label "has child interpretation level"@en .
+
+allmah:hasAncestorInterpretationLevel a owl:ObjectProperty, owl:TransitiveProperty ;
+    rdfs:domain allmah:InterpretationLevel ;
+    rdfs:range allmah:InterpretationLevel ;
+    rdfs:label "has ancestor interpretation level"@en ;
+    rdfs:comment "Transitive ancestry between interpretation levels."@en .
+
+allmah:hasParentElement a owl:ObjectProperty ;
+    rdfs:domain allmah:InterpretationElement ;
+    owl:inverseOf allmah:hasChildElement ;
+    rdfs:label "has parent element"@en ;
+    rdfs:comment "Connects an interpretation element to its immediate parent. For AlphanumericElement the parent is a GlyphElement; for later levels the parent is another InterpretationElement."@en .
+
+allmah:hasChildElement a owl:ObjectProperty ;
+    rdfs:range allmah:InterpretationElement ;
+    rdfs:label "has child element"@en .
+
+allmah:hasAncestorElement a owl:ObjectProperty, owl:TransitiveProperty ;
+    rdfs:domain allmah:InterpretationElement ;
+    rdfs:label "has ancestor element"@en ;
+    rdfs:comment "Transitive ancestry from interpretation elements back through previous interpretation elements and ultimately to structural elements."@en .
+
+allmah:hasInterpretationElement a owl:ObjectProperty ;
+    rdfs:domain allmah:InterpretationLevel ;
+    rdfs:range allmah:InterpretationElement ;
+    owl:inverseOf allmah:isElementOfInterpretationLevel ;
+    rdfs:label "has interpretation element"@en .
+
+allmah:isElementOfInterpretationLevel a owl:ObjectProperty ;
+    rdfs:domain allmah:InterpretationElement ;
+    rdfs:range allmah:InterpretationLevel ;
+    rdfs:label "is element of interpretation level"@en .
+
+allmah:validInOperatorScope a owl:ObjectProperty ;
+    rdfs:domain allmah:OperatorType ;
+    rdfs:range allmah:OperatorScope ;
+    rdfs:label "valid in operator scope"@en ;
+    rdfs:comment "Declares in which interpretation level or level group an operator may be used."@en .
+
+allmah:createdBy a owl:ObjectProperty ;
+    rdfs:domain allmah:ScholarlyAssertion ;
+    rdfs:range allmah:Agent ;
+    rdfs:label "created by"@en .
+
+allmah:hasConfidenceLevel a owl:ObjectProperty ;
+    rdfs:domain allmah:ScholarlyAssertion ;
+    rdfs:range allmah:ConfidenceLevel ;
+    rdfs:label "has confidence level"@en .
+
+#################################################################
+# Datatype properties
+#################################################################
+
+allmah:title a owl:DatatypeProperty ; rdfs:range xsd:string .
+allmah:teiXmlId a owl:DatatypeProperty ; rdfs:range xsd:string .
+allmah:textGridUri a owl:DatatypeProperty ; rdfs:range xsd:string .
+allmah:sourceUri a owl:DatatypeProperty ; rdfs:range xsd:anyURI .
+allmah:isFrozen a owl:DatatypeProperty ;
+    rdfs:domain allmah:InterpretationLevel ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "is frozen"@en ;
+    rdfs:comment "Marks an interpretation branch as frozen: it should be displayed but not expanded or further generated."@en .
+allmah:localFilePath a owl:DatatypeProperty ; rdfs:range xsd:string .
+allmah:createdAt a owl:DatatypeProperty ; rdfs:range xsd:dateTime .
+
+allmah:editorialComment a owl:DatatypeProperty ;
+    rdfs:domain allmah:ScholarlyAssertion ;
+    rdfs:range rdf:langString .
+
+allmah:confidenceNumericValue a owl:DatatypeProperty ;
+    rdfs:domain allmah:ConfidenceLevel ;
+    rdfs:range xsd:integer .
+allmah:lastModifiedAt a owl:DatatypeProperty ; rdfs:range xsd:dateTime .
+allmah:importedAt a owl:DatatypeProperty ; rdfs:range xsd:dateTime .
+allmah:revision a owl:DatatypeProperty ; rdfs:range xsd:integer .
+allmah:fileSize a owl:DatatypeProperty ; rdfs:range xsd:integer .
+allmah:md5Hash a owl:DatatypeProperty ; rdfs:range xsd:string .
+allmah:email a owl:DatatypeProperty ; rdfs:range xsd:string .
+allmah:name a owl:DatatypeProperty ; rdfs:range xsd:string .
+allmah:projectId a owl:DatatypeProperty ; rdfs:range xsd:string .
+allmah:projectName a owl:DatatypeProperty ; rdfs:range xsd:string .
+
+allmah:blockLabel a owl:DatatypeProperty ;
+    rdfs:domain allmah:HieroglyphBlock ;
+    rdfs:range xsd:string .
+
+allmah:blockPosition a owl:DatatypeProperty ;
+    rdfs:domain allmah:HieroglyphBlock ;
+    rdfs:range xsd:string .
+
+allmah:catalogNumber a owl:DatatypeProperty ;
+    rdfs:domain allmah:GlyphElement ;
+    rdfs:range xsd:string .
+
+allmah:catalogRef a owl:DatatypeProperty ;
+    rdfs:domain allmah:GlyphElement ;
+    rdfs:range xsd:string .
+
+allmah:operatorSymbol a owl:DatatypeProperty ;
+    rdfs:range xsd:string .
+
+allmah:orderIndex a owl:DatatypeProperty ;
+    rdfs:range xsd:integer .
+
+allmah:componentDisplayOrder a owl:DatatypeProperty ;
+    rdfs:domain allmah:Component ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Optional display/order hint. Component membership itself is not necessarily sequential."@en .
+
+
+allmah:componentLabel a owl:DatatypeProperty ;
+    rdfs:domain allmah:Component ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Application-level label of a component, e.g. CGlyph~A1;C1."@en .
+
+allmah:componentColor a owl:DatatypeProperty ;
+    rdfs:domain allmah:Component ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Display color of a component encoded as a CSS-style RGB hex string, e.g. #ff0000."@en .
+
+allmah:confidence a owl:DatatypeProperty ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Confidence value on a 1-5 scale. Used for Readings and interpretation/transliteration levels."@en .
+
+allmah:state a owl:DatatypeProperty ;
+    rdfs:range xsd:boolean .
+
+allmah:readingType a owl:DatatypeProperty ;
+    rdfs:label "reading type"@en ;
+    rdfs:domain allmah:Reading ;
+    rdfs:range xsd:string .
+
+allmah:isDamaged a owl:DatatypeProperty ;
+    rdfs:range xsd:boolean .
+
+allmah:damageQuantity a owl:DatatypeProperty ;
+    rdfs:range xsd:integer .
+
+allmah:literalValue a owl:DatatypeProperty ;
+    rdfs:range xsd:string .
+
+allmah:interpretationText a owl:DatatypeProperty ;
+    rdfs:domain allmah:InterpretationLevel ;
+    rdfs:range xsd:string .
+
+allmah:translationText a owl:DatatypeProperty ;
+    rdfs:domain allmah:Translation ;
+    rdfs:range xsd:string .
+
+allmah:isEdited a owl:DatatypeProperty ;
+    rdfs:range xsd:boolean .
+
+allmah:isAutomaticallyGenerated a owl:DatatypeProperty ;
+    rdfs:range xsd:boolean .
+
+allmah:frozenAt a owl:DatatypeProperty ;
+    rdfs:range xsd:dateTime .
+
+allmah:freezeReason a owl:DatatypeProperty ;
+    rdfs:range xsd:string .
+
+allmah:concatenationOperator a owl:DatatypeProperty ;
+    rdfs:domain allmah:ConcatenatedDocumentReading ;
+    rdfs:range xsd:string .
+
+#################################################################
+# Morphosyntactic transcription level (ALLMAH GUI MorphoSyntTranslit)
+#################################################################
+
+allmah:MorphosyntacticTranscription a owl:Class ;
+    rdfs:subClassOf allmah:Transcription ;
+    rdfs:label "Morphosyntactic transcription"@en .
+
+allmah:MorphosyntacticElement a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationElement ;
+    rdfs:label "Morphosyntactic element"@en .
+
+allmah:hasMorphosyntacticTranscription a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasInterpretationLevel ;
+    rdfs:domain allmah:PhonemicTranscription ;
+    rdfs:range allmah:MorphosyntacticTranscription ;
+    rdfs:label "has morphosyntactic transcription"@en .
+
+allmah:hasMorphosyntacticElement a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasInterpretationElement ;
+    rdfs:domain allmah:MorphosyntacticTranscription ;
+    rdfs:range allmah:MorphosyntacticElement ;
+    rdfs:label "has morphosyntactic element"@en .
+
+allmah:hasMorphosyntacticLetterElement a owl:ObjectProperty ;
+    rdfs:domain allmah:MorphosyntacticElement ;
+    rdfs:range allmah:MorphosyntacticElement ;
+    rdfs:label "has morphosyntactic letter element"@en .
+
+allmah:hasOldParentMorphosyntacticElement a owl:ObjectProperty ;
+    rdfs:domain allmah:MorphosyntacticElement ;
+    rdfs:range allmah:MorphosyntacticElement ;
+    rdfs:label "has old parent morphosyntactic element"@en .
+
+allmah:hasNewParentMorphosyntacticElement a owl:ObjectProperty ;
+    rdfs:domain allmah:MorphosyntacticElement ;
+    rdfs:range allmah:MorphosyntacticElement ;
+    rdfs:label "has new parent morphosyntactic element"@en .
+
+allmah:consolidatedLabel a owl:DatatypeProperty ;
+    rdfs:range xsd:string ;
+    rdfs:label "consolidated label"@en .
+
+allmah:finalConsolidatedLabel a owl:DatatypeProperty ;
+    rdfs:range xsd:string ;
+    rdfs:label "final consolidated label"@en .
+
+allmah:morphoNodeLevel a owl:DatatypeProperty ;
+    rdfs:domain allmah:MorphosyntacticElement ;
+    rdfs:range xsd:integer ;
+    rdfs:label "morphosyntactic node level"@en .
+
+allmah:isRemoved a owl:DatatypeProperty ;
+    rdfs:domain allmah:MorphosyntacticElement ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "is removed"@en .
+
+allmah:hasCurlyBrackets a owl:DatatypeProperty ;
+    rdfs:domain allmah:MorphosyntacticElement ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "has curly brackets"@en .
+
+allmah:hasSquareBrackets a owl:DatatypeProperty ;
+    rdfs:domain allmah:MorphosyntacticElement ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "has square brackets"@en .
+
+allmah:hasPipeBrackets a owl:DatatypeProperty ;
+    rdfs:domain allmah:MorphosyntacticElement ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "has pipe brackets"@en .
+
+allmah:isAbstract a owl:DatatypeProperty ;
+    rdfs:domain allmah:MorphosyntacticElement ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "is abstract morphosyntactic element"@en .
+
+
+#################################################################
+# Morphosyntactic glossing level (ALLMAH GUI MorphoSyntGlossing)
+#################################################################
+
+allmah:hasMorphosyntacticGlossing a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasInterpretationLevel ;
+    rdfs:domain allmah:MorphosyntacticTranscription ;
+    rdfs:range allmah:MorphosyntacticGlossing ;
+    rdfs:label "has morphosyntactic glossing"@en .
+
+allmah:hasGlossingElement a owl:ObjectProperty ;
+    rdfs:subPropertyOf allmah:hasInterpretationElement ;
+    rdfs:domain allmah:MorphosyntacticGlossing ;
+    rdfs:range allmah:GlossingElement ;
+    rdfs:label "has glossing element"@en .
+
+allmah:semanticGloss a owl:DatatypeProperty ;
+    rdfs:domain allmah:GlossingElement ;
+    rdfs:range xsd:string ;
+    rdfs:label "semantic gloss"@en .
+
+allmah:syntacticGloss a owl:DatatypeProperty ;
+    rdfs:domain allmah:GlossingElement ;
+    rdfs:range xsd:string ;
+    rdfs:label "syntactic gloss"@en .
+
+allmah:posCluster a owl:DatatypeProperty ;
+    rdfs:domain allmah:GlossingElement ;
+    rdfs:range xsd:string ;
+    rdfs:label "part-of-speech cluster"@en .
+
+allmah:posTag a owl:DatatypeProperty ;
+    rdfs:domain allmah:GlossingElement ;
+    rdfs:range xsd:string ;
+    rdfs:label "part-of-speech tag"@en .
+
+allmah:wordNetSynsetId a owl:DatatypeProperty ;
+    rdfs:domain allmah:GlossingElement ;
+    rdfs:range xsd:string ;
+    rdfs:label "WordNet synset id"@en .
+
+
+#################################################################
+# Translation and dictionary background nodes
+#################################################################
+
+allmah:TranslationNode a owl:Class ;
+    rdfs:subClassOf allmah:InterpretationLevel ;
+    rdfs:label "translation node"@en ;
+    rdfs:comment "Background translation node kept below a morphosyntactic glossing. It is written to RDF/GraphDB but normally not shown as a separate GUI tree node."@en .
+
+allmah:SimpleDictionaryEntry a owl:Class ;
+    rdfs:subClassOf allmah:TranslationNode ;
+    rdfs:label "simple dictionary entry"@en .
+
+allmah:ComposedDictionaryEntry a owl:Class ;
+    rdfs:subClassOf allmah:TranslationNode ;
+    rdfs:label "composed dictionary entry"@en .
+
+allmah:ConsolidatedTranslation a owl:Class ;
+    rdfs:subClassOf allmah:TranslationNode ;
+    rdfs:label "consolidated translation"@en .
+
+allmah:hasTranslationNode a owl:ObjectProperty ;
+    rdfs:domain allmah:MorphosyntacticGlossing ;
+    rdfs:range allmah:TranslationNode ;
+    rdfs:label "has translation node"@en .
+
+allmah:composedOf a owl:ObjectProperty ;
+    rdfs:domain allmah:TranslationNode ;
+    rdfs:range allmah:TranslationNode ;
+    rdfs:label "composed of"@en .
+
+allmah:hasPart a owl:ObjectProperty ;
+    rdfs:domain allmah:TranslationNode ;
+    rdfs:range allmah:TranslationNode ;
+    rdfs:label "has part"@en .
+
+allmah:originalText a owl:DatatypeProperty ;
+    rdfs:domain allmah:TranslationNode ;
+    rdfs:range xsd:string ;
+    rdfs:label "original text"@en .
+
+allmah:translationText a owl:DatatypeProperty ;
+    rdfs:domain allmah:TranslationNode ;
+    rdfs:range xsd:string ;
+    rdfs:label "translation text"@en .
+
+allmah:elementLabel a owl:DatatypeProperty ;
+    rdfs:domain allmah:TranslationNode ;
+    rdfs:range xsd:string ;
+    rdfs:label "element label"@en .
+
+allmah:semanticMeaning a owl:DatatypeProperty ;
+    rdfs:domain allmah:TranslationNode ;
+    rdfs:range xsd:string ;
+    rdfs:label "semantic meaning"@en .
+
+allmah:syntacticFunction a owl:DatatypeProperty ;
+    rdfs:domain allmah:TranslationNode ;
+    rdfs:range xsd:string ;
+    rdfs:label "syntactic function"@en .
+
+allmah:explanation a owl:DatatypeProperty ;
+    rdfs:domain allmah:TranslationNode ;
+    rdfs:range xsd:string ;
+    rdfs:label "explanation"@en .
+
+allmah:isDictionaryEntry a owl:DatatypeProperty ;
+    rdfs:domain allmah:TranslationNode ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "is dictionary entry"@en .
+
+
+#################################################################
+# Block annotation and annotation URI model
+#################################################################
+
+allmah:BlockAnnotation a owl:Class ;
+    rdfs:label "Block Annotation" .
+
+allmah:AnnotationURI a owl:Class ;
+    rdfs:label "Annotation URI" .
+
+allmah:ActivityURI a owl:Class ;
+    rdfs:subClassOf allmah:AnnotationURI ;
+    rdfs:label "Activity URI" .
+
+allmah:DedicationURI a owl:Class ;
+    rdfs:subClassOf allmah:AnnotationURI ;
+    rdfs:label "Dedication URI" .
+
+allmah:PlaceURI a owl:Class ;
+    rdfs:subClassOf allmah:AnnotationURI ;
+    rdfs:label "Place URI" .
+
+allmah:EpigraphicActorURI a owl:Class ;
+    rdfs:subClassOf allmah:AnnotationURI ;
+    rdfs:label "Epigraphic Actor URI" .
+
+allmah:EpigraphicGroupURI a owl:Class ;
+    rdfs:subClassOf allmah:AnnotationURI ;
+    rdfs:label "Epigraphic Group URI" .
+
+allmah:hasBlockAnnotation a owl:ObjectProperty ;
+    rdfs:domain allmah:HieroglyphBlock ;
+    rdfs:range allmah:BlockAnnotation ;
+    rdfs:label "has block annotation" .
+
+allmah:annotatesBlock a owl:ObjectProperty ;
+    rdfs:domain allmah:BlockAnnotation ;
+    rdfs:range allmah:HieroglyphBlock ;
+    rdfs:label "annotates block" .
+
+allmah:hasAnnotationURI a owl:ObjectProperty ;
+    rdfs:domain allmah:BlockAnnotation ;
+    rdfs:range allmah:AnnotationURI ;
+    rdfs:label "has annotation URI" .
+
+allmah:annotationType a owl:DatatypeProperty ;
+    rdfs:domain allmah:BlockAnnotation ;
+    rdfs:range xsd:string ;
+    rdfs:label "annotation type" .
+
+allmah:annotationSubType a owl:DatatypeProperty ;
+    rdfs:domain allmah:BlockAnnotation ;
+    rdfs:range xsd:string ;
+    rdfs:label "annotation subtype" .
+
+allmah:uriType a owl:DatatypeProperty ;
+    rdfs:domain allmah:AnnotationURI ;
+    rdfs:range xsd:string ;
+    rdfs:label "URI type" .
+
+allmah:activityDescription a owl:DatatypeProperty ;
+    rdfs:domain allmah:ActivityURI ;
+    rdfs:range xsd:string ;
+    rdfs:label "activity description" .
+
+allmah:placeOfActivity a owl:DatatypeProperty ;
+    rdfs:domain allmah:ActivityURI ;
+    rdfs:range xsd:string ;
+    rdfs:label "place of activity" .
+
+allmah:dedicationTitle a owl:DatatypeProperty ;
+    rdfs:domain allmah:DedicationURI ;
+    rdfs:range xsd:string ;
+    rdfs:label "dedication title" .
+
+allmah:dedicationPlace a owl:DatatypeProperty ;
+    rdfs:domain allmah:DedicationURI ;
+    rdfs:range xsd:string ;
+    rdfs:label "dedication place" .
+
+allmah:placeName a owl:DatatypeProperty ;
+    rdfs:domain allmah:PlaceURI ;
+    rdfs:range xsd:string ;
+    rdfs:label "place name" .
+
+allmah:locatedIn a owl:DatatypeProperty ;
+    rdfs:domain allmah:PlaceURI ;
+    rdfs:range xsd:string ;
+    rdfs:label "located in" .
+
+allmah:personName a owl:DatatypeProperty ;
+    rdfs:domain allmah:EpigraphicActorURI ;
+    rdfs:range xsd:string ;
+    rdfs:label "person name" .
+
+allmah:gender a owl:DatatypeProperty ;
+    rdfs:domain allmah:EpigraphicActorURI ;
+    rdfs:range xsd:string ;
+    rdfs:label "gender" .
+
+allmah:groupName a owl:DatatypeProperty ;
+    rdfs:domain allmah:EpigraphicGroupURI ;
+    rdfs:range xsd:string ;
+    rdfs:label "group name" .
